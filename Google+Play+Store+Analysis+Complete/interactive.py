@@ -33,8 +33,8 @@ app.layout = html.Div([
         value='All Categories'  # Default selection
     ),
     
-    # Pie chart for Content Rating
-    dcc.Graph(id='content-rating-pie', config={'displayModeBar': False}),
+    # Donut chart for Content Rating
+    dcc.Graph(id='content-rating-donut', config={'displayModeBar': False}),
     
     # Bar chart for the number of apps per category (vertical)
     dcc.Graph(id='top-category-bar', config={'displayModeBar': False}),
@@ -49,70 +49,70 @@ app.layout = html.Div([
     dcc.Graph(id='top-genres-bar', config={'displayModeBar': False}),
     
     # Grouped bar chart for free vs paid apps by category
-    dcc.Graph(id='free-vs-paid-by-category', config={'displayModeBar': False}),
+    dcc.Graph(id='free-vs-paid-by-category-groupedbar', config={'displayModeBar': False}),
     
     # Box plot for downloads of free vs paid apps
-    dcc.Graph(id='downloads-free-vs-paid', config={'displayModeBar': False}),
+    dcc.Graph(id='downloads-free-vs-paid-box', config={'displayModeBar': False}),
     
     # Box plot for revenue by app category
-    dcc.Graph(id='revenue-by-category', config={'displayModeBar': False}),
+    dcc.Graph(id='revenue-by-category-box', config={'displayModeBar': False}),
     
     # Box plot for median price for paid apps
-    dcc.Graph(id='median-price-paid-apps', config={'displayModeBar': False}),
+    dcc.Graph(id='median-price-paid-apps-box', config={'displayModeBar': False}),
 
-    # Sunburst chart for top genres
-    dcc.Graph(id='top-genres-sunburst', config={'displayModeBar': False}),
+    # Pie chart for top genres
+    dcc.Graph(id='top-genres-pie', config={'displayModeBar': False}),
 
-    # Treemap
-    dcc.Graph(id='treemap', config={'displayModeBar': False}),
+    # Treemap for Category and Genres
+    dcc.Graph(id='category-genre-treemap', config={'displayModeBar': False}),
 
-    # 12. Icicle graph
-    dcc.Graph(id='icicle-graph', config={'displayModeBar': False}),
+    # Icicle graph for Category and Genres
+    dcc.Graph(id='category-genre-icicle-graph', config={'displayModeBar': False}),
 
-    # 13. Heatmap
-    dcc.Graph(id='heatmap', config={'displayModeBar': False}),
+    # Heatmap for Category and Genres
+    dcc.Graph(id='category-genre-heatmap', config={'displayModeBar': False}),
 
-    # 14. Cluster Matrix
-    dcc.Graph(id='cluster-matrix', config={'displayModeBar': False}),
+    # Cluster Matrix for Category and Genres
+    dcc.Graph(id='category-genre-cluster-matrix', config={'displayModeBar': False}),
 
-    # 15. 3D Scatter Plot
-    dcc.Graph(id='scatter-3d', config={'displayModeBar': False}),
+    #3D Scatter Plot showing Relationship between Rating,Installs and Genres
+    dcc.Graph(id='rating-installs-genre-scatter-3d', config={'displayModeBar': False}),
 
-    # 16. Line Chart
-    dcc.Graph(id='line-chart', config={'displayModeBar': False}),
+    # Line Chart showing number of installs over time
+    dcc.Graph(id='installs-time-line', config={'displayModeBar': False}),
 
-    # 17. Bar Chart
-    dcc.Graph(id='bar-chart', config={'displayModeBar': False}),
+    # Bar chart showing Installs for different Android Versions
+    dcc.Graph(id='installs-android-bar', config={'displayModeBar': False}),
 
-        # 18. Violin Plot
-    dcc.Graph(id='violin-plot', config={'displayModeBar': False}),
+    # Violin plot showing distribution of rating across different content rating categories
+    dcc.Graph(id='rating-content_rating-violin', config={'displayModeBar': False}),
 
-    # 19. Bubble Chart
-    dcc.Graph(id='bubble-chart', config={'displayModeBar': False}),
+    # Bubble Chart showing relationship between rating and installs across Genres and content rating. 
+    dcc.Graph(id='rating-installs-bubble', config={'displayModeBar': False}),
 
 ])
 
 # Callbacks to update the charts
 @app.callback(
-    Output('content-rating-pie', 'figure'),
+    Output('content-rating-donut', 'figure'),
     Output('top-category-bar', 'figure'),
     Output('category-popularity-bar', 'figure'),
     Output('category-concentration-scatter', 'figure'),
     Output('top-genres-bar', 'figure'),
-    Output('free-vs-paid-by-category', 'figure'),
-    Output('downloads-free-vs-paid', 'figure'),
-    Output('revenue-by-category', 'figure'),
-    Output('median-price-paid-apps', 'figure'),
-    Output('top-genres-sunburst', 'figure'),
-    Output('treemap', 'figure'),
-    Output('icicle-graph', 'figure'),
-    Output('heatmap', 'figure'),
-    Output('cluster-matrix', 'figure'),
-    Output('scatter-3d', 'figure'),
-    Output('line-chart', 'figure'),
-    Output('bar-chart', 'figure'),
-    Output('violin-plot', 'figure'),
-    Output('bubble-chart', 'figure'),
+    Output('free-vs-paid-by-category-groupedbar', 'figure'),
+    Output('downloads-free-vs-paid-box', 'figure'),
+    Output('revenue-by-category-box', 'figure'),
+    Output('median-price-paid-apps-box', 'figure'),
+    Output('top-genres-pie', 'figure'),
+    Output('category-genre-treemap', 'figure'),
+    Output('category-genre-icicle-graph', 'figure'),
+    Output('category-genre-heatmap', 'figure'),
+    Output('category-genre-cluster-matrix', 'figure'),
+    Output('rating-installs-genre-scatter-3d', 'figure'),
+    Output('installs-time-line', 'figure'),
+    Output('installs-android-bar', 'figure'),
+    Output('rating-content_rating-violin', 'figure'),
+    Output('rating-installs-bubble', 'figure'),
     Input('category-dropdown', 'value')
 )
 
@@ -123,35 +123,54 @@ def update_charts(selected_category):
         filtered_df = df_apps_clean[df_apps_clean['Category'] == selected_category]
     
 
-    # 1. Pie chart for Content Rating
+    # 1. Donut chart for Content Rating
     fig1 = px.pie(
         labels=filtered_df['Content_Rating'].value_counts().index,
         values=filtered_df['Content_Rating'].value_counts().values,
-        title="Content Rating",
+        title="Donut Chart For Content Rating",
         names=filtered_df['Content_Rating'].value_counts().index,
         hole=0.6
     )
     fig1.update_traces(textposition='inside', textfont_size=15, textinfo='percent')
     
-    # 2. Bar chart for the number of apps per category (vertical)
+    # 2. Vertical Bar chart for the number of apps per category
     top10_category = filtered_df['Category'].value_counts()[:10]
-    fig2 = px.bar(x=top10_category.index, y=top10_category.values, title="Number of Apps per Category")
+    fig2 = px.bar(x=top10_category.index, y=top10_category.values, title="Vertical Bar Chart For Number of Apps per Category")
+    fig2.update_layout(xaxis_title='Categories',yaxis_title='Number of Apps')
 
     # 3. Horizontal bar chart for category popularity
+    # fig3 = px.bar(
+    # filtered_df, x='Installs', y='Category', orientation='h', title='Horizontal Bar Chart For Category Popularity'
+    #   )
+    # fig3.update_layout(xaxis_title='Number of Downloads', yaxis_title='Category')
+
+    # Create a column for labels based on Installs
+    filtered_df['Label'] = filtered_df['Installs'].apply(lambda x: '1M' if x == 1_000_000 else ('100M' if x == 100_000_000 else ('1B' if x == 1_000_000_000 else 'Others')))
+
     fig3 = px.bar(
-    filtered_df, x='Installs', y='Category', orientation='h', title='Category Popularity'
-      )
-    fig3.update_layout(xaxis_title='Number of Downloads', yaxis_title='Category')
+        filtered_df,
+        x='Installs',
+        y='Category',
+        title='Horizontal Bar Chart For Category Popularity',
+        color='Installs',  # Use the labels as the color differentiation
+    )
+
+    fig3.update_layout(
+        xaxis_title='Number of Downloads',
+        yaxis_title='Category'
+    )
+
+
 
       
-    #4 Scatter plot
+    #4. Scatter plot for category concentration
     cat_number = filtered_df['Category'].value_counts().reset_index()
     cat_number.columns = ['Category', 'App Count']
     cat_installs = filtered_df.groupby('Category')['Installs'].sum().reset_index()
     cat_merged_df = pd.merge(cat_number, cat_installs, on='Category', how="inner")
 
     fig4 = px.scatter(
-    cat_merged_df, x='App Count', y='Installs', text='Category', title='Category Concentration',
+    cat_merged_df, x='App Count', y='Installs', title='Scatter Plot For Category Concentration',
     size='App Count', color='Category'
       )
     fig4.update_layout(xaxis_title="Number of Apps (Lower=More Concentrated)", yaxis_title="Installs", yaxis=dict(type='log'))
@@ -160,21 +179,21 @@ def update_charts(selected_category):
     stack = filtered_df['Genres'].str.split(';', expand=True).stack()
     num_genres = stack.value_counts()
     fig5 = px.bar(
-        x=num_genres.index[:15], y=num_genres.values[:15], title='Top Genres',
-        hover_name=num_genres.index[:15], color=num_genres.values[:15], color_continuous_scale='Agsunset'
+        x=num_genres.index[:15], y=num_genres.values[:15], title='Bar Chart For Number of Apps Per Genre',
+        hover_name=num_genres.index[:15]
     )
     fig5.update_layout(xaxis_title='Genre', yaxis_title='Number of Apps', coloraxis_showscale=False)
 
     # 6. Grouped bar chart for free vs paid apps by category
     df_free_vs_paid = filtered_df.groupby(["Category", "Type"], as_index=False).agg({'App': pd.Series.count})
     fig6 = px.bar(
-        df_free_vs_paid, x='Category', y='App', title='Free vs Paid Apps by Category', color='Type', barmode='group'
+        df_free_vs_paid, x='Category', y='App', title='Grouped Bar Chart For Free vs Paid Apps by Category', color='Type', barmode='group'
     )
 
     # 7. Box plot for downloads of free vs paid apps
     fig7 = px.box(
-        filtered_df, y='Installs', x='Type', color='Type', notched=True, points='all',
-        title='How Many Downloads are Paid Apps Giving Up?'
+        filtered_df, y='Installs', x='Type', color='Type', notched=True,
+        title='Box Plot For How Many Downloads are Paid Apps Giving Up?'
     )
     fig7.update_layout(yaxis=dict(type='log'))
 
@@ -182,104 +201,150 @@ def update_charts(selected_category):
 
     df_paid_apps = filtered_df[filtered_df['Type'] == 'Paid']
     # 8. Box plot for revenue by app category
-    fig8 = px.box(df_paid_apps, x='Category', y='Revenue_Estimate', title='How Much Can Paid Apps Earn?')
+    fig8 = px.box(df_paid_apps, x='Category', y='Revenue_Estimate', title='Box Plot For How Much Can Paid Apps Earn?')
     fig8.update_layout(xaxis_title='Category', yaxis_title='Paid App Ballpark Revenue', xaxis={'categoryorder': 'min ascending'}, yaxis=dict(type='log'))
 
     # 9. Box plot for median price for paid apps
-    fig9 = px.box(df_paid_apps, x='Category', y="Price", title='Price per Category')
+    fig9 = px.box(df_paid_apps, x='Category', y="Price", title='Box Plot For Price per Category')
     fig9.update_layout(xaxis_title='Category', yaxis_title='Paid App Price', xaxis={'categoryorder': 'max descending'}, yaxis=dict(type='log'))
 
 
-    # 10. Sunburst chart for top genres
-    sunburst_data = filtered_df['Genres'].str.split(';', expand=True).stack().value_counts().reset_index()
-    sunburst_data.columns = ['Genres', 'Count']
+    # 10. Pie chart for top genres
+    pie_data = filtered_df['Genres'].str.split(';', expand=True).stack().value_counts().reset_index()
+    pie_data.columns = ['Genres', 'Count']
     fig10 = go.Figure(go.Sunburst(
-        labels=sunburst_data['Genres'],
-        parents=[""] * len(sunburst_data['Genres']),
-        values=sunburst_data['Count'],
+        labels=pie_data['Genres'],
+        parents=[""] * len(pie_data['Genres']),
+        values=pie_data['Count'],
         hovertemplate='%{label}<br>Count: %{value}',
     ))
     fig10.update_layout(
         margin=dict(l=0, r=0, b=0, t=0),
-        title=f"Top Genres for {selected_category}",
+        title=f"Pie Chart for Top Genres",
     )
 
 
 
-    # 11. Treemap
+    # 11. Treemap showing Categories and Genres.
     fig11 = px.treemap(
         filtered_df,
         path=['Category', 'Genres'],
         values='Installs',
         color='Rating',
         color_continuous_scale='Viridis',
-        title='Treemap'
+        title='Treemap Showing Categories and Genres'
     )
 
-     # 12. Icicle graph
+    # 12. Icicle graph showing Categories and Genres.
     icicle_data = filtered_df.groupby(['Category', 'Genres']).agg({'Installs': 'sum'}).reset_index()
     fig12 = px.icicle(
         icicle_data,
         path=['Category', 'Genres'],
         values='Installs',
-        title='Icicle Graph'
+        title='Icicle Graph showing Categories and Genres.'
     )
 
-    # 13. Heatmap
-    heatmap_data = filtered_df.pivot_table(index='Category', columns='Genres', values='Installs', aggfunc=np.sum)
+    # 13. Heatmap showing Category and Genre
+    # Convert 'Installs' to thousands
+    filtered_df['Installs_Thousands'] = filtered_df['Installs'] / 1e6
+
+    #Create the heatmap pivot table 
+    heatmap_data = filtered_df.pivot_table(index='Category', columns='Genres', values='Installs_Thousands', aggfunc=np.sum)
+
+    #Plot the heatmap with the adjusted 'Installs_Thousands' data
     fig13 = px.imshow(
         heatmap_data,
+        labels=dict(x="Genres", y="Category", color="Installs"),
         x=heatmap_data.columns,
         y=heatmap_data.index,
-        title='Heatmap'
+        title='Heatmap showing Category and Genres (Installs in Thousands)',
+        color_continuous_scale=[[0, 'rgb(128,0,128)'], [0.166, 'rgb(0,0,255)'], [0.333, 'rgb(0,255,255)'],
+                           [0.5, 'rgb(0,255,0)'], [0.666, 'rgb(255,255,0)'], [0.833, 'rgb(255,165,0)'],
+                           [1, 'rgb(255,0,0)']],
+        zmin=0,
+        zmax=20000
     )
 
-    # 14. Cluster Matrix
+    fig13.update_traces(hovertemplate='Category: %{y}<br>Genres: %{x}<br>Installs: %{z:.2f}')
+
+
+
+
+
+    # 14. Cluster Matrix showing Category and Genres
     cluster_data = heatmap_data.fillna(0)
+    # fig14 = px.imshow(
+    #     cluster_data,
+    #     x=cluster_data.columns,
+    #     y=cluster_data.index,
+    #     title='Cluster Matrix showing Category and Genres'
+    # )
     fig14 = px.imshow(
-        cluster_data,
-        x=cluster_data.columns,
-        y=cluster_data.index,
-        title='Cluster Matrix'
+    cluster_data,
+    labels=dict(x="Genres", y="Category"),
+    x=cluster_data.columns,
+    y=cluster_data.index,
+    title='Cluster Matrix showing Category and Genres',
+    color_continuous_scale='Rainbow',
+    range_color=[0, cluster_data.max().max()],  # Adjust the range according to your data
     )
 
-    # 15. 3D Scatter Plot
+    fig14.update_traces(showscale=False)  # Hides the color scale
+
+    fig14.update_layout(
+        autosize=False,
+        width=800,  # Set the width of the plot
+        height=600,  # Set the height of the plot
+    )
+
+    # 15. 3D Scatter Plot showing Relationship between Rating,Installs and Genres
     fig15 = px.scatter_3d(
         filtered_df,
         x='Rating',
         y='Reviews',
         z='Installs',
         color='Genres',
-        title='3D Scatter Plot'
+        title='3D Scatter Plot showing Relationship between Rating,Installs and Genres'
     )
-    # 16. Line Chart
+    # 16. Line Chart showing number of installs over time
+    # line_data = filtered_df.groupby('Last_Updated').agg({'Installs': 'sum'}).reset_index()
+    # fig16 = px.line(
+    #     line_data,
+    #     x='Last_Updated',
+    #     y='Installs',
+    #     title='Line Chart showing number of installs over time'
+    # )
     line_data = filtered_df.groupby('Last_Updated').agg({'Installs': 'sum'}).reset_index()
+    line_data = line_data[line_data['Installs'] != 0]  # Exclude rows where Installs are 0
     fig16 = px.line(
         line_data,
         x='Last_Updated',
         y='Installs',
-        title='Line Chart'
+        title='Line Chart showing number of installs over time'
     )
-    # 17. Bar Chart
+
+    # 17. Bar chart showing Installs for different Android Versions
     bar_data = filtered_df.groupby('Android_Ver').agg({'Installs': 'sum'}).reset_index()
+    bar_data = bar_data[bar_data['Android_Ver'] != 0]  # Exclude rows where Installs are 0
     fig17 = px.bar(
         bar_data,
         x='Android_Ver',
         y='Installs',
-        title='Bar Chart'
+        title='Bar chart showing Installs for different Android Versions'
     )
+   
 
-    # 18. Violin Plot
+
+    # 18. Violin plot showing distribution of rating across different content rating categories
     fig18 = px.violin(
         filtered_df,
         x='Content_Rating',
         y='Rating',
         box=True,
-        points="all",
-        title='Violin Plot'
+        title='Violin plot showing distribution of rating across different content rating categories'
     )
 
-    # 19. Bubble Chart
+    # 19. Bubble Chart showing relationship between rating and installs across Genres and content rating. 
     bubble_data = filtered_df.groupby(['Genres', 'Content_Rating']).agg({'Installs': 'sum', 'Rating': 'mean'}).reset_index()
     fig19 = px.scatter(
         bubble_data,
@@ -287,7 +352,7 @@ def update_charts(selected_category):
         y='Installs',
         size='Rating',
         color='Content_Rating',
-        title='Bubble Chart'
+        title='Bubble Chart showing relationship between rating and installs across Genres and content rating. '
     )
 
 
