@@ -214,6 +214,7 @@ def update_charts(selected_category):
 
 
 
+
     # 9. Box plot for median price for paid apps
     fig9 = px.box(df_paid_apps, x='Category', y="Price", title='Box Plot For Price per Category')
     fig9.update_layout(xaxis_title='Category', yaxis_title='Paid App Price', xaxis={'categoryorder': 'max descending'}, yaxis=dict(type='log'))
@@ -275,6 +276,7 @@ def update_charts(selected_category):
             width=1000,
             height=900
         )
+
     else:
         icicle_data = filtered_df.groupby(['Category', 'Genres']).agg({'Installs': 'sum'}).reset_index()
         # Create the Icicle chart for selected Categories and Genres
