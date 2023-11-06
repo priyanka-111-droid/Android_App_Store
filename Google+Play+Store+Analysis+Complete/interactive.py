@@ -17,6 +17,7 @@ df_apps_clean['Revenue_Estimate'] = df_apps_clean['Installs'] * df_apps_clean['P
 
 
 
+
 # Create a Dash app
 app = dash.Dash(__name__)
 
@@ -63,9 +64,6 @@ app.layout = html.Div([
     # Box plot for median price for paid apps
     dcc.Graph(id='median-price-paid-apps-box', config={'displayModeBar': False}),
 
-    # Pie chart for top genres
-    dcc.Graph(id='top-genres-pie', config={'displayModeBar': False}),
-
     # Treemap for Category and Genres
     dcc.Graph(id='category-genre-treemap', config={'displayModeBar': False}),
 
@@ -109,7 +107,6 @@ app.layout = html.Div([
     Output('downloads-free-vs-paid-box', 'figure'),
     Output('revenue-by-category-box', 'figure'),
     Output('median-price-paid-apps-box', 'figure'),
-    Output('top-genres-pie', 'figure'),
     Output('category-genre-treemap', 'figure'),
     Output('category-genre-icicle-graph', 'figure'),
     Output('category-genre-installs-heatmap', 'figure'),
@@ -222,25 +219,9 @@ def update_charts(selected_category):
 
 
 
-    # 10. Pie chart for top genres
-    pie_data = filtered_df['Genres'].str.split(';', expand=True).stack().value_counts().reset_index()
-    pie_data.columns = ['Genres', 'Count']
-    fig10 = go.Figure(go.Sunburst(
-        labels=pie_data['Genres'],
-        parents=[""] * len(pie_data['Genres']),
-        values=pie_data['Count'],
-        hovertemplate='%{label}<br>Count: %{value}',
-    ))
-    fig10.update_layout(
-        margin=dict(l=0, r=0, b=0, t=0),
-        title=f"Pie Chart for Top Genres",
-    )
-    
 
-
-
-    # 11. Treemap showing Categories and Genres.
-    fig11 = px.treemap(
+    # 10. Treemap showing Categories and Genres.
+    fig10 = px.treemap(
         filtered_df,
         path=['Category', 'Genres'],
         values='Installs',
@@ -252,7 +233,7 @@ def update_charts(selected_category):
 
 
 
-    # 12. Icicle graph showing selected Categories and Genres.
+    # 11. Icicle graph showing selected Categories and Genres.
     if selected_category == 'All Categories':
         # Select specific categories to include in the Icicle chart
         selected_categories = ['FAMILY','GAME']  # Replace with the desired category names
@@ -264,14 +245,14 @@ def update_charts(selected_category):
         icicle_data = icicle_data_selected.groupby(['Category', 'Genres']).agg({'Installs': 'sum'}).reset_index()
 
         # Create the Icicle chart for selected Categories and Genres
-        fig12 = px.icicle(
+        fig11 = px.icicle(
             icicle_data,
             path=['Category', 'Genres'],
             values='Installs',
             title='Icicle Graph showing Selected Categories and Genres.'
         )
 
-        fig12.update_layout(
+        fig11.update_layout(
             autosize=True,
             width=1000,
             height=900
@@ -280,14 +261,14 @@ def update_charts(selected_category):
     else:
         icicle_data = filtered_df.groupby(['Category', 'Genres']).agg({'Installs': 'sum'}).reset_index()
         # Create the Icicle chart for selected Categories and Genres
-        fig12 = px.icicle(
+        fig11 = px.icicle(
             icicle_data,
             path=['Category', 'Genres'],
             values='Installs',
             title='Icicle Graph showing Selected Categories and Genres.'
         )
 
-        fig12.update_layout(
+        fig11.update_layout(
             autosize=True,
             width=800,
             height=1000
@@ -301,7 +282,7 @@ def update_charts(selected_category):
 
 
 
-    # 13. Heatmap showing Category and Genre(installs in Thousands)
+    # 12. Heatmap showing Category and Genre(installs in Thousands)
     # Convert 'Installs' to thousands
     filtered_df['Installs_Thousands'] = filtered_df['Installs'] / 1e6
 
@@ -309,7 +290,7 @@ def update_charts(selected_category):
     heatmap_data = filtered_df.pivot_table(index='Category', columns='Genres', values='Installs_Thousands', aggfunc=np.sum)
 
     #Plot the heatmap with the adjusted 'Installs_Thousands' data
-    fig13 = px.imshow(
+    fig12 = px.imshow(
         heatmap_data,
         labels=dict(x="Genres", y="Category", color="Installs"),
         x=heatmap_data.columns,
@@ -321,8 +302,8 @@ def update_charts(selected_category):
         zmin=0,
         zmax=20000
     )
-    fig13.update_traces(hovertemplate='Category: %{y}<br>Genre: %{x}<br>Installs: %{z:.2f}')
-    fig13.update_layout(
+    fig12.update_traces(hovertemplate='Category: %{y}<br>Genre: %{x}<br>Installs: %{z:.2f}')
+    fig12.update_layout(
         autosize=True,
         width=1000,  # Set the width of the plot
         height=600
@@ -332,9 +313,9 @@ def update_charts(selected_category):
 
 
 
-    # 14. Bubble Chart showing relationship between rating and installs across content-rating.
+    # 13. Bubble Chart showing relationship between rating and installs across content-rating.
     bubble_data = filtered_df.groupby(['Genres', 'Content_Rating']).agg({'Installs': 'sum', 'Rating': 'mean'}).reset_index()
-    fig14 = px.scatter(
+    fig13 = px.scatter(
         bubble_data,
         x='Rating',
         y='Installs',
@@ -342,7 +323,7 @@ def update_charts(selected_category):
         color='Content_Rating',
         title='Bubble Chart showing relationship between rating and installs across content-rating.'
     )
-    fig14.update_layout(
+    fig13.update_layout(
             autosize=False,
             width=1000,  # Set the width of the plot
             height=600,  # Set the height of the plot
@@ -352,8 +333,8 @@ def update_charts(selected_category):
 
 
 
-    # 15. 3D Scatter Plot showing Relationship between Rating,Installs and Content rating.
-    fig15 = px.scatter_3d(
+    # 14. 3D Scatter Plot showing Relationship between Rating,Installs and Content rating.
+    fig14 = px.scatter_3d(
         filtered_df,
         x='Rating',
         y='Reviews',
@@ -361,7 +342,7 @@ def update_charts(selected_category):
         color='Content_Rating',
         title='3D Scatter Plot showing Relationship between Rating,Installs and Content rating'
     )
-    fig15.update_layout(
+    fig14.update_layout(
     width=900,  # Set the width of the plot
     height=700  # Set the height of the plot
     )
@@ -369,26 +350,17 @@ def update_charts(selected_category):
 
 
 
-    # 16. Line Chart showing number of installs over time
-    # Convert 'Last_Updated' to datetime
-    filtered_df['Last_Updated'] = pd.to_datetime(filtered_df['Last_Updated'])
-
+    # 15. Line Chart showing number of installs over time
     # Group by 'Last_Updated' and aggregate the sum of 'Installs'
     line_data = filtered_df.groupby('Last_Updated').agg({'Installs_Thousands': 'sum'}).reset_index()
 
-    # Sort by 'Last_Updated'
-    line_data = line_data.sort_values('Last_Updated')
-
-    # Format 'Last_Updated' to display in the format "Month Day, Year"
-    line_data['Last_Updated'] = line_data['Last_Updated'].dt.strftime('%B %d, %Y')
-
-    fig16 = px.line(
+    fig15 = px.line(
         line_data,
         x='Last_Updated',
         y='Installs_Thousands',
         title='Line Chart showing number of installs over time'
     )
-    fig16.update_layout(
+    fig15.update_layout(
     width=1300,  # Set the width of the plot
     height=700  # Set the height of the plot
     )
@@ -399,11 +371,11 @@ def update_charts(selected_category):
 
 
 
-    # 17. Bar chart showing Installs for different Android Versions
+    # 16. Bar chart showing Installs for different Android Versions
     bar_data = filtered_df.groupby('Android_Ver').agg({'Installs': 'sum'}).reset_index()
     bar_data['Installs'] = bar_data['Installs'].astype(str)
     bar_data = bar_data[bar_data['Installs'].astype(str) != '0']  # Exclude rows where Installs are 0
-    fig17 = px.bar(
+    fig16 = px.bar(
         bar_data,
         x='Android_Ver',
         y='Installs',
@@ -412,8 +384,8 @@ def update_charts(selected_category):
    
 
 
-    # 18. Violin plot showing distribution of rating across different content rating categories
-    fig18 = px.violin(
+    # 17. Violin plot showing distribution of rating across different content rating categories
+    fig17 = px.violin(
         filtered_df,
         x='Content_Rating',
         y='Rating',
@@ -426,9 +398,9 @@ def update_charts(selected_category):
 
     
 
-    #19. Plot the heatmap for Category and Prices
+    #18. Plot the heatmap for Category and Prices
     heatmap_data_prices = filtered_df.pivot_table(index='Category', columns='Genres', values='Size_MBs', aggfunc=np.sum)
-    fig19= px.imshow(
+    fig18= px.imshow(
         heatmap_data_prices,
         labels=dict(x="Genres", y="Category",color="size_MBs"),
         x=heatmap_data_prices.columns,
@@ -439,14 +411,14 @@ def update_charts(selected_category):
                            [1, 'rgb(255,0,0)']], # You can choose your desired color scale
     )
 
-    fig19.update_layout(
+    fig18.update_layout(
         autosize=False,
         width=1000,  # Set the width of the plot
         height=600,  # Set the height of the plot
     )
 
 
-    return fig1, fig2, fig3, fig4, fig5, fig6, fig7, fig8, fig9, fig10, fig11, fig12, fig13, fig14, fig15, fig16, fig17, fig18, fig19
+    return fig1, fig2, fig3, fig4, fig5, fig6, fig7, fig8, fig9, fig10,fig11, fig12, fig13, fig14, fig15, fig16, fig17, fig18
 
 
 
