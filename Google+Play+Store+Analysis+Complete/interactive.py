@@ -301,7 +301,7 @@ def update_charts(selected_category):
         title='Line Chart showing number of installs over time'
     )
     fig13.update_layout(
-    width=1500,  # Set the width of the plot
+    width=1200,  # Set the width of the plot
     height=700  # Set the height of the plot
     )
 
