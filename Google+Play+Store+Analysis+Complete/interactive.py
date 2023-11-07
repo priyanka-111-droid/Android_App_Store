@@ -40,7 +40,7 @@ app.layout = html.Div([
     # Donut chart for Content Rating
     dcc.Graph(id='content-rating-donut', config={'displayModeBar': False}),
     
-    # Bar chart for the number of apps per category (vertical)
+    # Vertical bar chart for the number of apps per category for top 10 categories
     dcc.Graph(id='top-category-bar', config={'displayModeBar': False}),
     
     # Horizontal bar chart for category popularity
@@ -131,9 +131,9 @@ def update_charts(selected_category):
     
 
 
-    # 2. Vertical Bar chart for the number of apps per category
+    # 2. Vertical Bar chart for the number of apps per category in top 10 categories
     top10_category = filtered_df['Category'].value_counts()[:10]
-    fig2 = px.bar(x=top10_category.index, y=top10_category.values, title="Vertical Bar Chart For Number of Apps per Category")
+    fig2 = px.bar(x=top10_category.index, y=top10_category.values, title="Vertical Bar Chart For Number of Apps per Category in top 10 categories")
     fig2.update_layout(xaxis_title='Categories',yaxis_title='Number of Apps')
 
 
